@@ -45,5 +45,5 @@ jobs:
         if: env.GIT_DIFF && (success() || failure())
         with:
           name: Helm charts unittests
-          path: ./reports/*-test-report.xml
+          path: ./reports/test-report.xml
           reporter: java-junit
