@@ -3,6 +3,9 @@ name: Unit Tests
 on:
   workflow_call:
 
+permissions:
+  checks: write
+
 jobs:
   unittest:
     name: Unit Tests
