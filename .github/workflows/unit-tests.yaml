@@ -3,9 +3,6 @@ name: Unit Tests
 on:
   workflow_call:
 
-permissions:
-  checks: write
-
 jobs:
   unittest:
     name: Unit Tests
@@ -17,6 +14,10 @@ jobs:
       matrix:
         helm-version:
           - v3.14.2
+
+    permissions:
+      checks: write
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
