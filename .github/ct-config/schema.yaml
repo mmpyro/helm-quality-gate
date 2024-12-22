@@ -21,7 +21,6 @@ annotations: map(str(), str(), required=False)
 maintainer:
   name: str()
   email: str(required=False)
-  url: str(required=True)
 ---
 dependency:
   name: str()

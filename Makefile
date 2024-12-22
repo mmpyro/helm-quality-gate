@@ -5,7 +5,8 @@ chart := example-app
 .PHONY: helm-lint
 helm-lint:
 	ct lint --config .github/ct-config/config.yaml \
-		--lint-conf .github/ct-config/lint.yaml $(chart) --debug
+  --lint-conf .github/ct-config/lint.yaml \
+  --charts $(chart) --debug
 
 .PHONY: helm-unittests
 helm-unittests:
