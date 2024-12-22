@@ -1,0 +1,26 @@
+suite: example app hpa tests
+release:
+  name: example-app
+  namespace: test-namespace
+templates:
+- hpa.yaml
+tests:
+  - it: should render hpa object
+    set:
+      autoscaling:
+        enabled: true
+    documentSelector:
+      path: $[?(@.kind == "HorizontalPodAutoscaler")].metadata.name
+      value: example-app
+    asserts:
+      - isKind:
+          of: HorizontalPodAutoscaler
+      - contains:
+          path: spec.metrics
+          content:
+            type: Resource
+            resource:
+              name: cpu
+              target:
+                type: Utilization
+                averageUtilization: 80

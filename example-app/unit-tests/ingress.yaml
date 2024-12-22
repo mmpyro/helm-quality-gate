@@ -1,0 +1,30 @@
+suite: example app ingress tests
+release:
+  name: example-app
+  namespace: test-namespace
+templates:
+- ingress.yaml
+tests:
+  - it: should render ingress object
+    set:
+      ingress:
+        enabled: true
+    documentSelector:
+      path: $[?(@.kind == "Ingress")].metadata.name
+      value: example-app
+    asserts:
+      - isKind:
+          of: Ingress
+      - contains:
+          path: spec.rules
+          content:
+            host: "chart-example.local"
+            http:
+              paths:
+                - path: /
+                  pathType: ImplementationSpecific
+                  backend:
+                    service:
+                      name: example-app
+                      port:
+                        number: 80

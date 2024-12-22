@@ -7,6 +7,13 @@ on:
     branches:
       - main
 
+permissions:
+  statuses: write
+  checks: write
+  contents: write
+  pull-requests: write
+  actions: write
+
 jobs:
   lint:
     uses: ./.github/workflows/lint-charts.yaml
