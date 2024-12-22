@@ -38,7 +38,7 @@ jobs:
         if: env.GIT_DIFF
         run: |
           helm plugin install https://github.com/helm-unittest/helm-unittest.git
-          make helm-unittest
+          make helm-unittests
 
       - name: Charts test Report
         uses: dorny/test-reporter@v1

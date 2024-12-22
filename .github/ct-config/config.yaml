@@ -1,8 +1,7 @@
 remote: origin
 target-branch: main
-helm-extra-args:
-helm-lint-extra-args: ''
-chart-yaml-schema: ct-config/schema.yaml
+helm-extra-args: --debug
+chart-yaml-schema: .github/ct-config/schema.yaml
 chart-dirs:
   - example-app
 excluded-charts: []
