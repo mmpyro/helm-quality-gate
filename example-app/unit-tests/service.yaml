@@ -1,0 +1,24 @@
+suite: example app service tests
+release:
+  name: example-app
+  namespace: test-namespace
+templates:
+  - service.yaml
+tests:
+  - it: should render service object
+    documentSelector:
+      path: $[?(@.kind == "Service")].metadata.name
+      value: example-app
+    asserts:
+      - isKind:
+          of: Service
+      - equal:
+          path: spec.type
+          value: ClusterIP
+      - contains:
+          path: spec.ports
+          content:
+            port: 80
+            targetPort: http
+            protocol: TCP
+            name: http

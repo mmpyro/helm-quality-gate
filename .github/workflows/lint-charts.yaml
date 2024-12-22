@@ -1,0 +1,49 @@
+name: Lint Charts
+
+on:
+  workflow_call:
+
+jobs:
+  lint:
+    name: Lint Charts
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        helm-version:
+          - v3.13.3
+          - v3.14.2
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Git diff
+        uses: technote-space/get-diff-action@v6
+        with:
+          PATTERNS: |
+            example-app/**/*
+            example-app/.helmignore
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4.0.0
+        if: env.GIT_DIFF
+        with:
+          version: ${{ matrix.helm-version }}
+
+      - uses: actions/setup-python@v4
+        if: env.GIT_DIFF
+        with:
+          python-version: '3.10'
+          check-latest: true
+
+      - name: Set up chart-testing
+        if: env.GIT_DIFF
+        uses: helm/chart-testing-action@v2.6.0
+
+      - name: Run chart-testing (lint)
+        if: env.GIT_DIFF
+        id: lint
+        run: |
+          make helm-lint

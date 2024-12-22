@@ -1,0 +1,18 @@
+name: Test Example chart
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint:
+    uses: ./.github/workflows/lint-charts.yaml
+
+  unittest:
+    uses: ./.github/workflows/unit-tests.yaml
+
+  schematest:
+    uses: ./.github/workflows/schema-tests.yaml

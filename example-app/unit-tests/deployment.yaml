@@ -1,0 +1,20 @@
+suite: example app deployment tests
+release:
+  name: example-app
+  namespace: test-namespace
+templates:
+- deployment.yaml
+tests:
+  - it: should render deployment object
+    documentSelector:
+      path: $[?(@.kind == "Deployment")].metadata.name
+      value: example-app
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.replicas
+          value: 1
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: example-app

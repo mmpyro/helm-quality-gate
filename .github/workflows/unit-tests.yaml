@@ -1,0 +1,49 @@
+name: Unit Tests
+
+on:
+  workflow_call:
+
+jobs:
+  unittest:
+    name: Unit Tests
+    runs-on: ubuntu-22.04
+    env:
+      helmUnitVersion: 0.4.2
+    strategy:
+      fail-fast: false
+      matrix:
+        helm-version:
+          - v3.14.2
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Git diff
+        uses: technote-space/get-diff-action@v6
+        with:
+          PATTERNS: |
+            example-app/**/*
+            example-app/.helmignore
+
+      - name: Install Helm
+        if: env.GIT_DIFF
+        uses: azure/setup-helm@v4.0.0
+        with:
+          version: ${{ matrix.helm-version }}
+
+      - name: Run Unittests
+        shell: bash
+        if: env.GIT_DIFF
+        run: |
+          helm plugin install https://github.com/helm-unittest/helm-unittest.git
+          make helm-unittest
+
+      - name: Charts test Report
+        uses: dorny/test-reporter@v1
+        if: env.GIT_DIFF && (success() || failure())
+        with:
+          name: Helm charts unittests
+          path: ./reports/*-test-report.xml
+          reporter: java-junit

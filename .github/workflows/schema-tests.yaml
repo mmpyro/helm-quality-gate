@@ -1,0 +1,45 @@
+name: Schema Tests
+
+on:
+  workflow_call:
+
+jobs:
+  schematest:
+    name: Schema Tests
+    runs-on: ubuntu-22.04
+    env:
+      helmUnitVersion: 0.4.2
+    strategy:
+      fail-fast: false
+      matrix:
+        k8s-version:
+          - 1.30.0
+          - 1.29.4
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Git diff
+        uses: technote-space/get-diff-action@v6
+        with:
+          PATTERNS: |
+            example-app/**/*
+            example-app/.helmignore
+
+      - name: Install Helm
+        if: env.GIT_DIFF
+        uses: azure/setup-helm@v4.0.0
+
+      - name: Install Kubeconform
+        if: env.GIT_DIFF
+        uses: bmuschko/setup-kubeconform@v1
+        with:
+          kubeconform-version: '0.6.6'
+
+      - name: Run Schematest
+        if: env.GIT_DIFF
+        shell: bash
+        run: |
+          make helm-schematest k8s_version=${{ matrix.k8s-version }}
