@@ -18,3 +18,7 @@ helm-unittests:
 helm-schematest:
 	helm template $(chart) | kubeconform --summary \
 	 --strict -ignore-missing-schemas --kubernetes-version $(k8s_version)
+
+.PHONY: helm-dry-run
+helm-dry-run:
+	helm install h2oai $(chart) --dry-run=server
