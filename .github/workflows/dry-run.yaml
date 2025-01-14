@@ -1,0 +1,49 @@
+name: Dryrun Chart
+
+on:
+  workflow_call:
+    secrets:
+      GCLOUD_SERVICE_ACCOUNT_KEY:
+        required: true
+
+jobs:
+  dryrun:
+    name: Dryrun Chart
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        helm-version:
+          - v3.14.2
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Git diff
+        uses: technote-space/get-diff-action@v6
+        with:
+          PATTERNS: |
+            example-app/**/*
+            example-app/.helmignore
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4.0.0
+        if: env.GIT_DIFF
+        with:
+          version: ${{ matrix.helm-version }}
+
+      - name: Create k8s Kind Cluster
+        if: env.GIT_DIFF
+        uses: helm/kind-action@v1
+        with:
+          version: v0.24.0
+
+      - name: Dry run
+        shell: bash
+        if: env.GIT_DIFF
+        run: |
+          kubectl version
+          echo "Starting dry-run server"
+          make helm-dry-run 1> /dev/null

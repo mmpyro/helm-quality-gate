@@ -23,3 +23,6 @@ jobs:
 
   schematest:
     uses: ./.github/workflows/schema-tests.yaml
+
+  dryrun:
+    uses: ./.github/workflows/dry-run.yaml
