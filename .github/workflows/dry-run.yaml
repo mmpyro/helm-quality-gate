@@ -2,9 +2,6 @@ name: Dryrun Chart
 
 on:
   workflow_call:
-    secrets:
-      GCLOUD_SERVICE_ACCOUNT_KEY:
-        required: true
 
 jobs:
   dryrun:
